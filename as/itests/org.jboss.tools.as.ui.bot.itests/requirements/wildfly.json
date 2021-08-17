@@ -1,0 +1,9 @@
+{
+	"org.jboss.ide.eclipse.as.reddeer.server.requirement.ServerRequirement.JBossServer": [
+		{
+			"runtime": "/Users/lgrossma/wildfly-24.0.0.Final",
+			"version": "24+",
+			"family": "WILDFLY"
+		}
+	]
+}

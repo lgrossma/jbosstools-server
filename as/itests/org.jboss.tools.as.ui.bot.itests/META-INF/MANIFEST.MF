@@ -124,7 +124,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.wst.xsdeditor.doc.user,
  org.eclipse.jst.servlet.ui,
  org.eclipse.jst.ejb.ui,
- org.apache.commons.lang
+ org.apache.commons.lang,
+ org.eclipse.reddeer.requirements
 Bundle-Activator: org.jboss.tools.as.ui.bot.itests.Activator
 Automatic-Module-Name: org.jboss.tools.as.ui.bot.itests
 
