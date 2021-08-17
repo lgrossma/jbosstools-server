@@ -33,7 +33,6 @@ public class ShowInBrowserTest extends AbstractTest {
 		Thread.sleep(200);
 		
 		assertTrue(browser.getText().contains("WildFly")); 
-		//hello
 	
 	}
 }
