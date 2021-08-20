@@ -66,6 +66,7 @@ public class ShowInContextMenuTest {
 		assertTrue("Web Browser option in Show In context menu is inactive even though server is running",
 				menu.getItem("Show In", "Web Browser").isEnabled());
 	}
+	
 	@Test
 	public void BrowserContainsCorrectContent() throws InterruptedException {
 		sv.activate();
