@@ -4,3 +4,4 @@ pmd-eclipse.log
 .settings
 .project
 .classpath
+as/itests/org.jboss.tools.as.ui.bot.itests/requirements/jre.json
