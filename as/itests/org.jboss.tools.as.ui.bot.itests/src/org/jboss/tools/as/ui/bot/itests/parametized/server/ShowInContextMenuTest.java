@@ -12,15 +12,19 @@ package org.jboss.tools.as.ui.bot.itests.parametized.server;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.eclipse.reddeer.common.wait.WaitUntil;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.Server;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.ServersView2;
 import org.eclipse.reddeer.junit.runner.RedDeerSuite;
 import org.eclipse.reddeer.requirements.server.ServerRequirementState;
 import org.eclipse.reddeer.swt.api.Browser;
 import org.eclipse.reddeer.swt.api.Menu;
+import org.eclipse.reddeer.swt.condition.PageIsLoaded;
 import org.eclipse.reddeer.swt.impl.browser.InternalBrowser;
 import org.eclipse.reddeer.swt.impl.menu.ContextMenu;
 import org.jboss.ide.eclipse.as.reddeer.server.requirement.ServerRequirement.JBossServer;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,16 +39,18 @@ import org.junit.runner.RunWith;
 @JBossServer(state=ServerRequirementState.PRESENT)
 public class ShowInContextMenuTest {
 	
-	private final ServersView2 sv = new ServersView2();
-	private final Menu menu = new ContextMenu();
-	private final Server server = sv.getServer("WildFly 24+ Server");
+	private ServersView2 sv = new ServersView2();
+	private Menu menu = new ContextMenu();
+	private Server server = sv.getServer("WildFly 24+ Server");
+	
+	@Before
+	private void selectServer() {
+		sv.activate();
+		server.select();
+	}
 	
 	@Test
-	public void ShowInWebBrowserIsDisabled(){
-		sv.activate();
-		
-		server.select();
-		
+	public void showInWebBrowserIsDisabled(){
 		if(server.getLabel().getState().isRunningState()) {
 			server.stop();
 		}
@@ -54,11 +60,7 @@ public class ShowInContextMenuTest {
 	}
 	
 	@Test
-	public void ShowInWebBrowserIsEnabled() {
-		sv.activate();
-		
-		server.select();
-		
+	public void showInWebBrowserIsEnabled() {
 		if(!server.getLabel().getState().isRunningState()) {
 			server.start();
 		}
@@ -68,11 +70,7 @@ public class ShowInContextMenuTest {
 	}
 	
 	@Test
-	public void BrowserContainsCorrectContent() throws InterruptedException {
-		sv.activate();
-		
-		server.select();
-		
+	public void browserContainsCorrectContent() throws InterruptedException {
 		if(!server.getLabel().getState().isRunningState()) {
 			server.start();
 		}
@@ -81,7 +79,7 @@ public class ShowInContextMenuTest {
 		
 		Browser browser = new InternalBrowser();
 		browser.setFocus();
-		Thread.sleep(200);
+		new WaitUntil(new PageIsLoaded(browser));
 		
 		assertTrue("Web browser does not show right content",browser.getText().contains("WildFly")); 
 	}
