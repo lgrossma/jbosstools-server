@@ -17,9 +17,12 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.eclipse.reddeer.common.exception.WaitTimeoutExpiredException;
+import org.eclipse.reddeer.common.wait.AbstractWait;
 import org.eclipse.reddeer.common.wait.TimePeriod;
 import org.eclipse.reddeer.common.wait.WaitUntil;
 import org.eclipse.reddeer.common.wait.WaitWhile;
+import org.eclipse.reddeer.eclipse.condition.ServerHasState;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.Server;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.ServersView2;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.ServersViewEnums.ServerState;
@@ -28,6 +31,8 @@ import org.eclipse.reddeer.swt.api.Button;
 import org.eclipse.reddeer.swt.api.TreeItem;
 import org.eclipse.reddeer.swt.condition.ShellIsAvailable;
 import org.eclipse.reddeer.swt.impl.button.PushButton;
+import org.eclipse.reddeer.swt.impl.menu.ContextMenuItem;
+import org.eclipse.reddeer.workbench.core.condition.JobIsRunning;
 import org.jboss.ide.eclipse.as.reddeer.server.requirement.ServerRequirement;
 import org.jboss.tools.as.jmx.ui.bot.itests.JMXTestTemplate;
 import org.jboss.tools.jmx.reddeer.core.JMXConnection;
@@ -64,9 +69,20 @@ public abstract class JMXServerTestTemplate extends JMXTestTemplate {
 
 	public void stopServer() {
 		Server server = getServer(serverConfig.getServerName());
-		if (server.getLabel().getState() != ServerState.STOPPED) {
-			server.stop();
-		}
+    	new ServersView2().activate();
+    	server.select();
+    	if(server.getLabel().getState().isRunningState()) {
+			try {
+				new ContextMenuItem("Stop").select();
+				new WaitWhile(new JobIsRunning());
+				new WaitUntil(new ServerHasState(server, ServerState.STOPPED), TimePeriod.LONG);
+			} catch (WaitTimeoutExpiredException ex){
+				//try it once again
+				new ContextMenuItem("Stop").select();
+				new WaitWhile(new JobIsRunning());
+				new WaitUntil(new ServerHasState(server, ServerState.STOPPED), TimePeriod.LONG);
+			}
+    	}
 	}
 	
 	public Server getServer(String name) {
@@ -91,7 +107,10 @@ public abstract class JMXServerTestTemplate extends JMXTestTemplate {
 		if (serverConnection == null) {
 			fail("There was no JMX connection item defined under server: " + serverName);
 		}
+		new ServersView2().activate();
+		
 		serverConnection.select();
+		
 		serverConnection.getLabel().getState().equals(JMXConnectionState.DISCONNECTED);
 
 		startServer();

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.jboss.tools.as.jmx.ui.bot.itests.server.connection;
 
+import org.eclipse.reddeer.direct.preferences.Preferences;
 import org.eclipse.reddeer.junit.annotation.RequirementRestriction;
 import org.eclipse.reddeer.junit.requirement.matcher.RequirementMatcher;
 import org.eclipse.reddeer.requirements.server.ServerRequirementState;
@@ -35,6 +36,8 @@ public class JMXServerConnectionTest extends JMXServerTestTemplate {
 
 	@Before
 	public void setupServer() {
+		Preferences.set("org.eclipse.debug.ui", "Console.limitConsoleOutput", "false");
+		
 		setUpView();
 
 		server = getServer(serverConfig.getServerName());
@@ -59,5 +62,4 @@ public class JMXServerConnectionTest extends JMXServerTestTemplate {
 
 		verifyServerOperation(verifyRunScanOperation(openOperationsPage(connection)));
 	}
-
 }

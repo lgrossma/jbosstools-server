@@ -17,6 +17,7 @@ import org.eclipse.reddeer.common.exception.WaitTimeoutExpiredException;
 import org.eclipse.reddeer.common.logging.Logger;
 import org.eclipse.reddeer.common.wait.WaitUntil;
 import org.eclipse.reddeer.common.wait.WaitWhile;
+import org.eclipse.reddeer.direct.preferences.Preferences;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.ServersViewEnums.ServerState;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.ServersViewException;
 import org.eclipse.reddeer.junit.annotation.RequirementRestriction;
@@ -50,6 +51,7 @@ public class RemoteServerJMXConnectionTest extends JMXServerTestTemplate {
 
 	@Before
 	public void setupServer() {
+		Preferences.set("org.eclipse.debug.ui", "Console.limitConsoleOutput", "false");
 		setUpView();
 
 		server = getServer(serverConfig.getServerName());
@@ -103,5 +105,4 @@ public class RemoteServerJMXConnectionTest extends JMXServerTestTemplate {
 
 		verifyServerOperation(verifyRunScanOperation(openOperationsPage(connection)));
 	}
-
 }

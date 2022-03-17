@@ -35,6 +35,7 @@ import org.eclipse.reddeer.common.condition.AbstractWaitCondition;
 import org.eclipse.reddeer.common.logging.Logger;
 import org.eclipse.reddeer.common.wait.TimePeriod;
 import org.eclipse.reddeer.common.wait.WaitUntil;
+import org.eclipse.reddeer.direct.preferences.Preferences;
 import org.eclipse.reddeer.junit.annotation.RequirementRestriction;
 import org.eclipse.reddeer.junit.requirement.matcher.RequirementMatcher;
 import org.eclipse.reddeer.requirements.server.ServerRequirementState;
@@ -72,6 +73,7 @@ public class JMXServerConnectionAutoDeployDisableTest extends JMXServerTestTempl
 	
 	@Before
 	public void setupServer() {
+		Preferences.set("org.eclipse.debug.ui", "Console.limitConsoleOutput", "false");
 		setUpView();
 		
 		deploymentPath = Paths.get(serverConfig.getConfiguration().getRuntime(), "standalone", "deployments");
@@ -252,5 +254,4 @@ public class JMXServerConnectionAutoDeployDisableTest extends JMXServerTestTempl
 		}
     	
     }
-
 }
