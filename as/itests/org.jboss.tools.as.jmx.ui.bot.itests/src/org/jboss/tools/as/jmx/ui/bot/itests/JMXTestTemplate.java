@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import org.eclipse.reddeer.common.logging.Logger;
 import org.eclipse.reddeer.common.wait.TimePeriod;
 import org.eclipse.reddeer.common.wait.WaitUntil;
+import org.eclipse.reddeer.direct.preferences.Preferences;
 import org.eclipse.reddeer.workbench.core.condition.JobIsRunning;
 import org.jboss.tools.as.jmx.ui.bot.itests.util.JMXUtils;
 import org.jboss.tools.jmx.reddeer.core.JMXConnection;
@@ -81,6 +82,7 @@ public abstract class JMXTestTemplate {
 			
 	@Before
 	public void setUpEclipseConnection() {
+		Preferences.set("org.eclipse.debug.ui", "Console.limitConsoleOutput", "false");
 		setUpView();
 		runJavaApp();
 		new WaitUntil(new JobIsRunning(), TimePeriod.MEDIUM, false);
