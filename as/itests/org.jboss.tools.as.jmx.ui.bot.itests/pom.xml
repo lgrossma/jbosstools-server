@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -12,44 +13,100 @@
 	<artifactId>org.jboss.tools.as.jmx.ui.bot.itests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
-	<properties>
-		<maven.test.failure.ignore>true</maven.test.failure.ignore>
-		<rd.config>${project.build.directory}/classes/requirements.json</rd.config>
-		<skipPrivateRequirements>false</skipPrivateRequirements>
-		<systemProperties>-Drd.config=${rd.config} -Dusage_reporting_enabled=false -Djbosstools.test.wildfly.26.home=${jbosstools.test.wildfly.26.home} -Djbosstools.test.wildfly.27.home=${jbosstools.test.wildfly.27.home} -Djbosstools.test.eap.7.4.home=${jbosstools.test.eap.7.4.home} -Dusername=${username} -Dpassword=${password} -Dremote.system.type=${remote.system.type}</systemProperties>
-		<surefire.timeout>14400</surefire.timeout>
-		<username></username>
-		<password></password>
-		<server.host></server.host>
-		<remote.system.type></remote.system.type>
-		<jbosstools.test.wildfly.26.home>${jbosstools.test.jboss.home.26.1}</jbosstools.test.wildfly.26.home>
-		<jbosstools.test.wildfly.27.home>${jbosstools.test.jboss.home.27.0}</jbosstools.test.wildfly.27.home>
-		<jbosstools.test.eap.7.4.home>${jbosstools.test.jboss.home.eap.7.4}</jbosstools.test.eap.7.4.home>
-		<suiteClass>org.jboss.tools.as.jmx.ui.bot.itests.JMXAllTests</suiteClass>
-	</properties>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<configuration>
-					<appArgLine>-pluginCustomization ${requirementsDirectory}/pluginCustomization.ini</appArgLine>
-					<useUIThread>false</useUIThread>
-					<testSuite>org.jboss.tools.as.jmx.ui.bot.itests</testSuite>
-					<testClass>${suiteClass}</testClass>
-					<skip>${skipITests}</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-				<includes>
-					<include>*</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-	</build>
+	<profiles>
+		<profile>
+			<id>jmx-all</id>
+			<activation>
+				<property>
+					<name>test.profile</name>
+					<value>jmx-all</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.test.failure.ignore>true</maven.test.failure.ignore>
+				<rd.config>${project.build.directory}/classes/requirements.json</rd.config>
+				<skipPrivateRequirements>false</skipPrivateRequirements>
+				<systemProperties>-Drd.config=${rd.config} -Dusage_reporting_enabled=false -Djbosstools.test.wildfly.26.home=${jbosstools.test.wildfly.26.home} -Djbosstools.test.wildfly.27.home=${jbosstools.test.wildfly.27.home} -Djbosstools.test.eap.7.4.home=${jbosstools.test.eap.7.4.home} -Dusername=${username} -Dpassword=${password} -Dremote.system.type=${remote.system.type} --add-opens java.base/java.security=ALL-UNNAMED</systemProperties>
+				<username></username>
+				<password></password>
+				<server.host></server.host>
+				<remote.system.type></remote.system.type>
+				<jbosstools.test.wildfly.26.home>${jbosstools.test.jboss.home.26.1}</jbosstools.test.wildfly.26.home>
+				<jbosstools.test.wildfly.27.home>${jbosstools.test.jboss.home.27.0}</jbosstools.test.wildfly.27.home>
+				<jbosstools.test.eap.7.4.home>${jbosstools.test.jboss.home.eap.7.4}</jbosstools.test.eap.7.4.home>
+				<suiteClass>org.jboss.tools.as.jmx.ui.bot.itests.JMXAllTests</suiteClass>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-surefire-plugin</artifactId>
+						<configuration>
+							<appArgLine>-pluginCustomization ${requirementsDirectory}/pluginCustomization.ini</appArgLine>
+							<useUIThread>false</useUIThread>
+							<testSuite>org.jboss.tools.as.jmx.ui.bot.itests</testSuite>
+							<testClass>${suiteClass}</testClass>
+							<skip>${skipITests}</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+				<resources>
+					<resource>
+						<directory>resources</directory>
+						<includes>
+							<include>*</include>
+						</includes>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>jmx-smoke</id>
+			<activation>
+				<property>
+					<name>test.profile</name>
+					<value>jmx-smoke</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.test.failure.ignore>true</maven.test.failure.ignore>
+				<rd.config>${project.build.directory}/classes/requirements.json</rd.config>
+				<skipPrivateRequirements>false</skipPrivateRequirements>
+				<systemProperties>-Drd.config=${rd.config} -Dusage_reporting_enabled=false -Djbosstools.test.wildfly.26.home=${jbosstools.test.wildfly.26.home} -Djbosstools.test.wildfly.27.home=${jbosstools.test.wildfly.27.home} -Djbosstools.test.eap.7.4.home=${jbosstools.test.eap.7.4.home} -Dusername=${username} -Dpassword=${password} -Dremote.system.type=${remote.system.type} --add-opens java.base/java.security=ALL-UNNAMED</systemProperties>
+				<surefire.timeout>14400</surefire.timeout>
+				<username></username>
+				<password></password>
+				<server.host></server.host>
+				<remote.system.type></remote.system.type>
+				<jbosstools.test.wildfly.26.home>${jbosstools.test.jboss.home.26.1}</jbosstools.test.wildfly.26.home>
+				<jbosstools.test.wildfly.27.home>${jbosstools.test.jboss.home.27.0}</jbosstools.test.wildfly.27.home>
+				<suiteClass>org.jboss.tools.as.jmx.ui.bot.itests.JMXSmokeSuiteTests</suiteClass>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-surefire-plugin</artifactId>
+						<configuration>
+							<appArgLine>-pluginCustomization ${requirementsDirectory}/pluginCustomization.ini</appArgLine>
+							<useUIThread>false</useUIThread>
+							<testSuite>org.jboss.tools.as.jmx.ui.bot.itests</testSuite>
+							<testClass>${suiteClass}</testClass>
+							<skip>${skipITests}</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+				<resources>
+					<resource>
+						<directory>resources</directory>
+						<includes>
+							<include>*</include>
+						</includes>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
 </project>
