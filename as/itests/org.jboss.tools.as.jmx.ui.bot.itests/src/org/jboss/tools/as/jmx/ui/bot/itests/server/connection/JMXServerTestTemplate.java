@@ -59,7 +59,11 @@ public abstract class JMXServerTestTemplate extends JMXTestTemplate {
 	}
 	
 	public void startServer() {
-		getServer(serverConfig.getServerName()).start();
+		Server server = getServer(serverConfig.getServerName());
+		if (server.getLabel().getState() != ServerState.STOPPED) {
+			stopServer();
+		}
+		server.start();
 	}
 	
 	public void getServerJMXConnection() {
