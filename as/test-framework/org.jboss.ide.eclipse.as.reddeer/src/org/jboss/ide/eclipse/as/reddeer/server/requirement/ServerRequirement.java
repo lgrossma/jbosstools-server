@@ -9,13 +9,19 @@
  ******************************************************************************/
 package org.jboss.ide.eclipse.as.reddeer.server.requirement;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.eclipse.reddeer.common.exception.RedDeerException;
+import org.eclipse.reddeer.common.exception.WaitTimeoutExpiredException;
 import org.eclipse.reddeer.common.logging.Logger;
+import org.eclipse.reddeer.common.wait.WaitWhile;
+import org.eclipse.reddeer.eclipse.exception.EclipseLayerException;
+import org.eclipse.reddeer.eclipse.rse.ui.view.System;
 import org.eclipse.reddeer.eclipse.rse.ui.view.SystemViewPart;
 import org.eclipse.reddeer.eclipse.rse.ui.wizards.newconnection.RSEDefaultNewConnectionWizardMainPage;
 import org.eclipse.reddeer.eclipse.rse.ui.wizards.newconnection.RSEMainNewConnectionWizard;
@@ -25,6 +31,11 @@ import org.eclipse.reddeer.eclipse.wst.server.ui.wizard.NewServerWizard;
 import org.eclipse.reddeer.eclipse.wst.server.ui.wizard.NewServerWizardPage;
 import org.eclipse.reddeer.junit.requirement.ConfigurableRequirement;
 import org.eclipse.reddeer.requirements.server.AbstractServerRequirement;
+import org.eclipse.reddeer.requirements.server.ServerRequirementState;
+import org.eclipse.reddeer.swt.api.Shell;
+import org.eclipse.reddeer.swt.condition.ShellIsAvailable;
+import org.eclipse.reddeer.swt.impl.button.PushButton;
+import org.eclipse.reddeer.swt.impl.shell.DefaultShell;
 import org.jboss.ide.eclipse.as.reddeer.server.family.JBossFamily;
 import org.jboss.ide.eclipse.as.reddeer.server.requirement.ServerRequirement.JBossServer;
 import org.jboss.ide.eclipse.as.reddeer.server.wizard.page.JBossRuntimeWizardPage;
@@ -32,11 +43,6 @@ import org.jboss.ide.eclipse.as.reddeer.server.wizard.page.NewServerAdapterPage;
 import org.jboss.ide.eclipse.as.reddeer.server.wizard.page.NewServerAdapterPage.Profile;
 import org.jboss.ide.eclipse.as.reddeer.server.wizard.page.NewServerRSIWizardPage;
 import org.jboss.ide.eclipse.as.reddeer.server.wizard.page.NewServerWizardPageWithErrorCheck;
-import org.eclipse.reddeer.requirements.server.ServerRequirementState;
-import org.eclipse.reddeer.eclipse.exception.EclipseLayerException;
-import org.eclipse.reddeer.eclipse.rse.ui.view.System;
-
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -228,7 +234,15 @@ public class ServerRequirement extends AbstractServerRequirement implements Conf
 	@Override
 	public void cleanUp() {
 		if (server.cleanup() && config != null){
-			removeServerAndRuntime();
+			try {
+				removeServerAndRuntime();
+			} catch (WaitTimeoutExpiredException e) {
+				Shell deleteServer = new DefaultShell("Delete Server");
+				if (deleteServer.isVisible()) {
+					new PushButton("Ok").click();
+					new WaitWhile(new ShellIsAvailable(deleteServer), false);
+				}
+			}
 		}
 		if (server.cleanup() && config.getRemote() != null) {
 			removeRemoteConnection();
